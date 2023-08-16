@@ -217,8 +217,15 @@ colors <- data.frame(
     "#ffffff"
   )
 )
-ggmsa::ggmsa(dna_seq, custom_color = colors, show.legend = T) +
-  ggmsa::facet_msa(field = 80)
+
+if (requireNamespace("ggmsa", quietly = TRUE)) {
+  ggmsa::ggmsa(dna_seq, custom_color = colors, show.legend = T) +
+    ggmsa::facet_msa(field = 80)
+ } else {
+    
+ }
+
+
 
 ## -----------------------------------------------------------------------------
 zenodo_doi <- "10.5281/zenodo.7401189"

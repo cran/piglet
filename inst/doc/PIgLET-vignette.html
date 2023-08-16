@@ -348,7 +348,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">PIgLET: Program for Ig clusters</h1>
 <h4 class="author">Ayelet Peres &amp; William D. Lees &amp; Gur Yaari</h4>
-<h4 class="date">Last modified 2023-06-12</h4>
+<h4 class="date">Last modified 2023-08-15</h4>
 
 
 <div id="TOC">
@@ -529,8 +529,15 @@ similarity thresholds for the ASC clusters and families.</p>
 IMGT in July 2022.</li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(piglet)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PIgLET version: 1.0.0</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(HVGERM)</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Registered S3 methods overwritten by &#39;ggalt&#39;:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   method                  from   </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   grid.draw.absoluteGrob  ggplot2</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   grobHeight.absoluteGrob ggplot2</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   grobWidth.absoluteGrob  ggplot2</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   grobX.absoluteGrob      ggplot2</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   grobY.absoluteGrob      ggplot2</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PIgLET version: 1.0.1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(HVGERM)</span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>The allele functionality table - the table contains functionality
 information for each of the alleles. Download from IMGT in July 2022</li>
@@ -637,14 +644,7 @@ repressed using the <code>quite=TRUE</code> flag.</p>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Counts by primers: </span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; VH1-FR1:53,VH2-FR1:25,VH3-FR1:122,VH4-FR1:69,VH5-FR1:10,VH6-FR1:3</span></span></code></pre></div>
 <p>We will look at one sequence, <code>IGHV1-8*01</code> to see the masking (Fig. <a href="#fig:nuc-plot">3.3</a>)</p>
-<pre><code>#&gt; Registered S3 methods overwritten by &#39;ggalt&#39;:
-#&gt;   method                  from   
-#&gt;   grid.draw.absoluteGrob  ggplot2
-#&gt;   grobHeight.absoluteGrob ggplot2
-#&gt;   grobWidth.absoluteGrob  ggplot2
-#&gt;   grobX.absoluteGrob      ggplot2
-#&gt;   grobY.absoluteGrob      ggplot2
-#&gt; Scale for x is already present.
+<pre><code>#&gt; Scale for x is already present.
 #&gt; Adding another scale for x, which will replace the existing scale.
 #&gt; Coordinate system already present. Adding new coordinate system, which will
 #&gt; replace the existing one.</code></pre>
@@ -681,7 +681,7 @@ book</a>.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>zenodo_doi <span class="ot">&lt;-</span> <span class="st">&quot;10.5281/zenodo.7401189&quot;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>asc_archive <span class="ot">&lt;-</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recentAlleleClusters</span>(<span class="at">doi =</span> zenodo_doi, <span class="at">get_file =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Files will be downloaded to tmp directory: /tmp/RtmpMBsr0m</span></span></code></pre></div>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Files will be downloaded to tmp directory: /tmp/RtmpkknRsj</span></span></code></pre></div>
 <p>To extract the ASC threshold table we can use the <code>extractASCTable</code>
 function</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>allele_cluster_table <span class="ot">&lt;-</span> <span class="fu">extractASCTable</span>(<span class="at">archive_file =</span> asc_archive)</span></code></pre></div>
