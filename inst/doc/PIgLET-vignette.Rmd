@@ -393,42 +393,10 @@ To demonstrate the use of the function, we can use the cleaned germline
 set from above (<a href="#lst-germlineset-code">block 1</a>). 
 In this case we will mask the FRW1 region, this will return the sequences with the Ns instead of DNA
 nucleotide. The function output a log of the process, this output can be
-repressed using the `quite=TRUE` flag.
+repressed using the `quiet=TRUE` flag.
 
 ```{r frw1}
 germline_frw1 <- artificialFRW1Germline(germline, mask_primer = T)
-```
-
-We will look at one sequence, `IGHV1-8*01` to see the masking (Fig. \@ref(fig:nuc-plot))
-
-```{r nuc-plot, fig.width=8, fig.height=4, echo=FALSE, fig.cap="IGHV1-8*01 germline sequence. The allele's germline sequence before and after masking. The colors represents the different nucleotides."}
-
-allele = "IGHV1-8*01"
-dna_seq <-
-  Biostrings::DNAStringSet(setNames(
-    c(germline[allele], germline_frw1[allele]),
-    c("IGHS1V1-8*01", "IGHS2V1-8*01")
-  ))
-colors <- data.frame(
-  names = c("A", "T", "C", "G", "N", "."),
-  color = c(
-    "#ff6d6d",
-    "#769dcc",
-    "#f2be3c",
-    "#74ce98",
-    "#b8b8b8",
-    "#ffffff"
-  )
-)
-
-if (requireNamespace("ggmsa", quietly = TRUE)) {
-  ggmsa::ggmsa(dna_seq, custom_color = colors, show.legend = T) +
-    ggmsa::facet_msa(field = 80)
- } else {
-    
- }
-
-
 ```
 
 We can use the artificial germline set to infer the ASC clusters in the
@@ -457,7 +425,7 @@ The ASC-based threshold, found in the manuscript and the IGHV reference book are
 
 To retrieve the archive files we can use the `recentAlleleClusters` function. The function can get a path value for locally saving the archive files with the `path` flag, if non is supplied then the function save the files in a temporary directory. The flag `get_file=TRUE`, will return the downloaded file full path.
 
-```{r}
+```{r, eval=FALSE}
 zenodo_doi <- "10.5281/zenodo.7401189"
 asc_archive <-
   recentAlleleClusters(doi = zenodo_doi, get_file = TRUE)
@@ -466,8 +434,12 @@ asc_archive <-
 To extract the ASC threshold table we can use the `extractASCTable`
 function
 
-```{r}
+```{r, eval=FALSE}
 allele_cluster_table <- extractASCTable(archive_file = asc_archive)
+```
+
+```{r, echo=FALSE}
+allele_cluster_table <- read.delim('asc_alleles_table.tsv',sep='\t')
 ```
 
 The table is has identical ASC clusters to the table we created above
@@ -487,7 +459,6 @@ asc_tables <- dplyr::left_join(
   by = "new_allele",
   suffix = c(".piglet", ".zenodo")
 )
-head(asc_tables)
 ```
 
 We can now extract the threshold from the Zenodo archive table and fill
@@ -576,7 +547,7 @@ following columns
 
 ```{r}
 # inferring the genotype
-asc_genotype <- inferGenotypeAllele(
+asc_genotype <- inferGenotypeAllele_asc(
   asc_data,
   alleleClusterTable = allele_cluster_table,
   germline_db = asc_germline,

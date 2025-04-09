@@ -2,44 +2,61 @@
 % Please edit documentation in R/allele_genotype.R
 \name{inferGenotypeAllele}
 \alias{inferGenotypeAllele}
-\title{Allele similarity cluster based genotype inference}
+\title{Allele based genotype inference}
 \usage{
 inferGenotypeAllele(
   data,
-  alleleClusterTable,
-  v_call = "v_call",
+  allele_threshold_table = NULL,
+  call = "v_call",
+  asc_annotation = FALSE,
   single_assignment = FALSE,
+  translate_to_asc = FALSE,
   germline_db = NA,
   find_unmutated = FALSE,
-  seq = "sequence_alignment"
+  seq = "sequence_alignment",
+  default_allele_threshold = 1e-04,
+  quiet = TRUE
 )
 }
 \arguments{
-\item{data}{data.frame in AIRR format, containing V allele calls from a single subject and the sample IMGT-gapped V(D)J sequences under seq.}
+\item{data}{data.frame in AIRR format, containing allele calls from a single subject and the sample IMGT-gapped V(D)J sequences under seq.}
 
-\item{alleleClusterTable}{A data.frame of the allele similarity clusters thresholds.}
+\item{allele_threshold_table}{A data.frame of the alleles and their thresholds.}
 
-\item{v_call}{name of the V allele call column. Default is \code{v_call}}
+\item{call}{name of the V,D, or J allele call column, i.e v_call, d_call, j_call. Default is \code{v_call}}
+
+\item{asc_annotation}{Logical (FALSE by default). Are the allele calls annotated with the allele similarity clusters.}
 
 \item{single_assignment}{if TRUE, the method only considers sequence with single assignment for the genotype inference.}
+
+\item{translate_to_asc}{For V allele calls, collapse identical allele for the genotype inference. Default is FALSE.}
 
 \item{germline_db}{named vector of sequences containing the germline sequences named in V allele calls and the alleleClusterTable. Only required if find_unmutated is TRUE.}
 
 \item{find_unmutated}{if TRUE, use germline_db to find which samples are unmutated. Not needed if V allele calls only represent unmutated samples.}
 
 \item{seq}{name of the column in data with the aligned, IMGT-numbered, V(D)J nucleotide sequence. Default is sequence_alignment.}
+
+\item{default_allele_threshold}{The default allele threshold for the genotype inference, in case the allele threshold is not in the \code{allele_threshold_table}. Default is 1e-04.}
+
+\item{quiet}{Logical (TRUE by default). Do you want to suppress informative messages}
 }
 \value{
-A a data.frame with the inferred V genotype. The table contains the following columns:\tabular{llllllll}{
-   gene \tab alleles \tab imgt_alleles \tab counts \tab absolute_fraction \tab absolute_threshold \tab genotyped_alleles \tab genotype_imgt_alleles \cr
-   allele cluster \tab the present alleles \tab the imgt nomenclature \tab the number of reads \tab the absolute fraction \tab the population driven allele \tab the alleles which \tab the imgt nomenclature \cr
-    \tab in the repertoire \tab of the alleles \tab for each alleles \tab of the alleles \tab thresholds for genotype presence \tab entered the genotype \tab of the alleles \cr
+A a data.frame with the inferred V genotype. The table contains the following columns:
+\itemize{
+\item allele: The alleles in the \code{allele_threshold_table}.
+\item counts: The number of reads for each alleles.
+\item depth: The total number of reads in the genotype (Sum of counts).
+\item threshold: The population driven allele thresholds for genotype presence.
+\item z_score: The confidence level for the presence of the allele in the genotype.
+\item asc_allele: If \code{translate_to_asc} is true, the asc allele value from allele_threshold_table.
 }
 }
 \description{
 \code{inferGenotypeAllele} infer an individual's genotype based on the allele-base method.
 The method utilize the allele specific threshold to determine the presence of an allele in the genotype.
-More specifically, the absolute frequency of each allele is calculated and checked against the threshold.
+More specifically, based on the allele frequency, repertoire depth, and the specific allele threshold, a confidence level (Z score) is calculated
+for the presence of the allele in the genotype. The user can select the confidence level for the genotype inference.
 }
 \details{
 In naive repertoires, allele calls where more than one assignment is assigned is rare. Hence, in case the data represents the naive repertoire of a subject
@@ -52,28 +69,20 @@ are treated as belonging to all groups.
 # loading TIgGER AIRR-seq b cell data
 data <- tigger::AIRRDb
 
-# preferably obtain the latest ASC cluster table
-# asc_archive <- recentAlleleClusters(doi="10.5281/zenodo.7429773", get_file = TRUE)
-
-# allele_cluster_table <- extractASCTable(archive_file = asc_archive)
-
-# example allele similarity cluster table
-data(allele_cluster_table)
+# allele threshold table
+data(allele_threshold_table)
 
 data(HVGERM)
 
-# reforming the germline set
-asc_germline <- germlineASC(allele_cluster_table, germline = HVGERM)
-
-# assigning the ASC alleles
-asc_data <- assignAlleleClusters(data, allele_cluster_table)
-
 # inferring the genotype
-asc_genotype <- inferGenotypeAllele(
-data = asc_data,
-alleleClusterTable = allele_cluster_table,
-germline_db = asc_germline, find_unmutated=TRUE)
+genotype <- inferGenotypeAllele(
+data = data,
+allele_threshold_table = allele_threshold_table,
+germline_db = HVGERM, find_unmutated=TRUE)
 
+# filter alleles with z_score >= 0 
+
+head(genotype[genotype$z_score >= 0,])
 
 }
 \seealso{

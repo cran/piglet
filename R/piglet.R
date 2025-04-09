@@ -1,4 +1,5 @@
 # piglet package documentation and import directives
+"_PACKAGE"
 
 #' The Program for Ig clusters (PIgLET) package
 #'
@@ -35,12 +36,12 @@
 #' }
 #'
 #' @name     piglet
-#' @docType  package
 #' @references
 #' \enumerate{
 #'   \item  ##
 #'}
 #'
+#' @useDynLib piglet, .registration = TRUE
 #' @import   methods
 #' @import   graphics
 #' @import   grDevices
@@ -50,7 +51,7 @@
 #' @import   circlize
 #' @import   jsonlite
 #' @import   ComplexHeatmap
-#' @importFrom  ggmsa            ggmsa facet_msa
+#' @importFrom  Rcpp             sourceCpp evalCpp
 #' @importFrom  R6               R6Class
 #' @importFrom  dplyr            do n desc funs %>% distinct
 #'                               as_data_frame data_frame
@@ -65,11 +66,19 @@
 #' @importFrom  alakazam         getGene getAllele getFamily
 #' @importFrom  rlang            .data
 #' @importFrom  tigger           readIgFasta findUnmutatedCalls
-#' @importFrom  Biostrings       DNAStringSet
+#' @importFrom  Biostrings       DNAStringSet unmasked
 #' @importFrom  DECIPHER         DistanceMatrix
 #' @importFrom  RColorBrewer     brewer.pal.info brewer.pal
-#' @importFrom  splitstackshape  cSplit
 #' @importFrom  zen4R            download_zenodo
 #' @importFrom  methods          setOldClass
-#' @importFrom  splitstackshape  cSplit
 NULL
+
+# Package loading actions
+.onAttach <- function(libname, pkgname) {
+  msg <- paste0("PIgLET version: ",packageVersion(pkgname))
+  msg <- paste(msg, 'New feature was added! A confidence level to the genotype inference. Check the news for more details', collapse = "\n\n")
+  cite <- citation(pkgname)
+  msg <-paste(msg,paste(format(cite,"citation"),collapse="\n\n"),collapse="\n\n")
+  packageStartupMessage(msg)
+  invisible()
+}

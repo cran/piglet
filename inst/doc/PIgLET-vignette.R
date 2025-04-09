@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 )
 suppressMessages(library(htmltools))
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 htmltools::img(src = knitr::image_uri("piglet_logo.svg"), 
                alt = 'logo', 
                style = 'position:absolute; top:0; right:0; padding:10px;border: none !important;')
@@ -198,44 +198,18 @@ plot(asc)
 ## ----frw1---------------------------------------------------------------------
 germline_frw1 <- artificialFRW1Germline(germline, mask_primer = T)
 
-## ----nuc-plot, fig.width=8, fig.height=4, echo=FALSE, fig.cap="IGHV1-8*01 germline sequence. The allele's germline sequence before and after masking. The colors represents the different nucleotides."----
+## ----eval=FALSE---------------------------------------------------------------
+#  zenodo_doi <- "10.5281/zenodo.7401189"
+#  asc_archive <-
+#    recentAlleleClusters(doi = zenodo_doi, get_file = TRUE)
 
-allele = "IGHV1-8*01"
-dna_seq <-
-  Biostrings::DNAStringSet(setNames(
-    c(germline[allele], germline_frw1[allele]),
-    c("IGHS1V1-8*01", "IGHS2V1-8*01")
-  ))
-colors <- data.frame(
-  names = c("A", "T", "C", "G", "N", "."),
-  color = c(
-    "#ff6d6d",
-    "#769dcc",
-    "#f2be3c",
-    "#74ce98",
-    "#b8b8b8",
-    "#ffffff"
-  )
-)
+## ----eval=FALSE---------------------------------------------------------------
+#  allele_cluster_table <- extractASCTable(archive_file = asc_archive)
 
-if (requireNamespace("ggmsa", quietly = TRUE)) {
-  ggmsa::ggmsa(dna_seq, custom_color = colors, show.legend = T) +
-    ggmsa::facet_msa(field = 80)
- } else {
-    
- }
+## ----echo=FALSE---------------------------------------------------------------
+allele_cluster_table <- read.delim('asc_alleles_table.tsv',sep='\t')
 
-
-
-## -----------------------------------------------------------------------------
-zenodo_doi <- "10.5281/zenodo.7401189"
-asc_archive <-
-  recentAlleleClusters(doi = zenodo_doi, get_file = TRUE)
-
-## -----------------------------------------------------------------------------
-allele_cluster_table <- extractASCTable(archive_file = asc_archive)
-
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 asc_tables <- dplyr::left_join(
   asc@alleleClusterTable %>%
     dplyr::select(new_allele, imgt_allele) %>% dplyr::group_by(new_allele) %>%
@@ -249,7 +223,6 @@ asc_tables <- dplyr::left_join(
   by = "new_allele",
   suffix = c(".piglet", ".zenodo")
 )
-head(asc_tables)
 
 ## -----------------------------------------------------------------------------
 # loading TIgGER AIRR-seq b cell data
@@ -275,7 +248,7 @@ asc_germline <- germlineASC(allele_cluster_table, germline = HVGERM)
 
 ## -----------------------------------------------------------------------------
 # inferring the genotype
-asc_genotype <- inferGenotypeAllele(
+asc_genotype <- inferGenotypeAllele_asc(
   asc_data,
   alleleClusterTable = allele_cluster_table,
   germline_db = asc_germline,
